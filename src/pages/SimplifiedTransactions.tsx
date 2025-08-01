@@ -22,8 +22,6 @@ const SimplifiedTransactions = () => {
     competence_month: new Date().getMonth() + 1,
     competence_year: new Date().getFullYear(),
     due_date: '',
-    is_recurring: false,
-    recurring_day: new Date().getDate(),
     is_paid: false
   });
   const [saving, setSaving] = useState(false);
@@ -50,18 +48,6 @@ const SimplifiedTransactions = () => {
         
         if (formData.due_date) {
           transactionData.due_date = formData.due_date;
-        }
-        
-        if (formData.is_recurring && formData.recurring_day) {
-          // Criar template para futuras transações
-          const templateData = {
-            type: formData.type,
-            description: formData.description,
-            amount: parseFloat(formData.amount),
-            category_id: formData.category_id || null
-          };
-          
-          await addTemplate(templateData);
         }
       }
 
@@ -95,8 +81,6 @@ const SimplifiedTransactions = () => {
         competence_month: formData.competence_month,
         competence_year: formData.competence_year,
         due_date: '',
-        is_recurring: false,
-        recurring_day: new Date().getDate(),
         is_paid: false
       });
       setSaveAsTemplate(false);
@@ -141,27 +125,27 @@ const SimplifiedTransactions = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("${backgroundSvg}")` }}></div>
       
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white flex items-center">
-              <Plus className="mr-3 h-8 w-8 text-green-400" />
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white flex items-center">
+              <Plus className="mr-2 sm:mr-3 h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-green-400" />
               Nova Transação
             </h1>
-            <p className="text-gray-400 mt-2">Registre suas receitas e despesas</p>
+            <p className="text-gray-400 mt-2 text-sm sm:text-base">Registre suas receitas e despesas</p>
           </div>
 
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
-            <CardHeader>
-              <CardTitle className="text-white">Detalhes da Transação</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-white text-lg sm:text-xl">Detalhes da Transação</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
               {/* Seção de Templates */}
               {templates.length > 0 && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border-2 border-blue-500/30">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-white font-medium flex items-center">
-                      <BookOpen className="mr-2 h-4 w-4 text-blue-400" />
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border-2 border-blue-500/30">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+                    <h3 className="text-white font-medium flex items-center text-sm sm:text-base">
+                      <BookOpen className="mr-2 h-4 w-4 text-blue-400 flex-shrink-0" />
                       Predefinições Disponíveis
                     </h3>
                     <Button
@@ -169,14 +153,14 @@ const SimplifiedTransactions = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowTemplates(!showTemplates)}
-                      className="text-blue-400 hover:text-blue-300"
+                      className="text-blue-400 hover:text-blue-300 self-start sm:self-auto text-xs sm:text-sm px-2 py-1"
                     >
                       {showTemplates ? 'Ocultar' : 'Mostrar'}
                     </Button>
                   </div>
                   
                   {showTemplates && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2">
                       {templates.map((template: any) => (
                         <Button
                           key={template.id}
@@ -184,16 +168,16 @@ const SimplifiedTransactions = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleTemplateSelect(template)}
-                          className="justify-start text-left border-blue-500/30 text-blue-200 hover:bg-blue-500/20"
+                          className="justify-start text-left border-blue-500/30 text-blue-200 hover:bg-blue-500/20 p-2 h-auto"
                         >
-                          <div className="flex items-center">
+                          <div className="flex items-center w-full">
                             {template.type === 'income' ? (
-                              <ArrowUpRight className="mr-2 h-3 w-3 text-green-400" />
+                              <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
                             ) : (
-                              <ArrowDownRight className="mr-2 h-3 w-3 text-red-400" />
+                              <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
                             )}
-                            <div>
-                              <div className="font-medium">{template.description}</div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
                               <div className="text-xs opacity-75">
                                 R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                               </div>
@@ -206,38 +190,38 @@ const SimplifiedTransactions = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="flex gap-4">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="flex gap-2 sm:gap-4">
                   <Button
                     type="button"
                     variant={formData.type === 'income' ? 'default' : 'outline'}
                     onClick={() => setFormData({...formData, type: 'income'})}
-                    className={`flex-1 ${
+                    className={`flex-1 text-xs sm:text-sm p-2 sm:p-3 ${
                       formData.type === 'income' 
                         ? 'bg-green-600 hover:bg-green-700' 
                         : 'border-green-600 text-green-400 hover:bg-green-600 hover:text-white'
                     }`}
                   >
-                    <ArrowUpRight className="mr-2 h-4 w-4" />
+                    <ArrowUpRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Receita
                   </Button>
                   <Button
                     type="button"
                     variant={formData.type === 'expense' ? 'default' : 'outline'}
                     onClick={() => setFormData({...formData, type: 'expense'})}
-                    className={`flex-1 ${
+                    className={`flex-1 text-xs sm:text-sm p-2 sm:p-3 ${
                       formData.type === 'expense' 
                         ? 'bg-red-600 hover:bg-red-700' 
                         : 'border-red-600 text-red-400 hover:bg-red-600 hover:text-white'
                     }`}
                   >
-                    <ArrowDownRight className="mr-2 h-4 w-4" />
+                    <ArrowDownRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Despesa
                   </Button>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="amount" className="text-gray-300">Valor *</Label>
+                  <Label htmlFor="amount" className="text-gray-300 text-sm">Valor *</Label>
                   <Input
                     id="amount"
                     type="number"
@@ -245,27 +229,27 @@ const SimplifiedTransactions = () => {
                     placeholder="0.00"
                     value={formData.amount}
                     onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="competence-month" className="text-gray-300">
-                      <Calendar className="inline mr-2 h-4 w-4" />
+                    <Label htmlFor="competence-month" className="text-gray-300 text-sm flex items-center">
+                      <Calendar className="inline mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       Mês de Competência *
                     </Label>
                     <Select
                       value={formData.competence_month.toString()}
                       onValueChange={(value) => setFormData({...formData, competence_month: parseInt(value)})}
                     >
-                      <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-700">
                         {months.map((month, index) => (
-                          <SelectItem key={index + 1} value={(index + 1).toString()} className="text-white">
+                          <SelectItem key={index + 1} value={(index + 1).toString()} className="text-white text-sm">
                             {month}
                           </SelectItem>
                         ))}
@@ -274,13 +258,13 @@ const SimplifiedTransactions = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="competence-year" className="text-gray-300">Ano de Competência *</Label>
+                    <Label htmlFor="competence-year" className="text-gray-300 text-sm">Ano de Competência *</Label>
                     <Input
                       id="competence-year"
                       type="number"
                       value={formData.competence_year}
                       onChange={(e) => setFormData({...formData, competence_year: parseInt(e.target.value)})}
-                      className="bg-gray-800 border-gray-700 text-white"
+                      className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base"
                       min="2020"
                       max="2030"
                       required
@@ -289,13 +273,14 @@ const SimplifiedTransactions = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description" className="text-gray-300">Descrição *</Label>
+                  <Label htmlFor="description" className="text-gray-300 text-sm">Descrição *</Label>
                   <Textarea
                     id="description"
                     placeholder="Descreva a transação..."
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base resize-none"
+                    rows={3}
                     required
                   />
                 </div>
@@ -303,24 +288,24 @@ const SimplifiedTransactions = () => {
                 {formData.type === 'expense' && (
                   <>
                     <div className="space-y-2">
-                      <Label htmlFor="category" className="text-gray-300">Categoria *</Label>
+                      <Label htmlFor="category" className="text-gray-300 text-sm">Categoria *</Label>
                       <Select
                         value={formData.category_id}
                         onValueChange={(value) => setFormData({...formData, category_id: value})}
                         required
                       >
-                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base">
                           <SelectValue placeholder="Selecione a categoria" />
                         </SelectTrigger>
                         <SelectContent className="bg-gray-800 border-gray-700">
                           {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id} className="text-white">
+                            <SelectItem key={category.id} value={category.id} className="text-white text-sm">
                               <div className="flex items-center">
                                 <div 
-                                  className="w-3 h-3 rounded-full mr-2" 
+                                  className="w-3 h-3 rounded-full mr-2 flex-shrink-0" 
                                   style={{ backgroundColor: category.color }}
                                 ></div>
-                                {category.name}
+                                <span className="truncate">{category.name}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -329,71 +314,49 @@ const SimplifiedTransactions = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="due-date" className="text-gray-300">Data de Vencimento (opcional)</Label>
+                      <Label htmlFor="due-date" className="text-gray-300 text-sm">Data de Vencimento (opcional)</Label>
                       <Input
                         id="due-date"
                         type="date"
                         value={formData.due_date}
                         onChange={(e) => setFormData({...formData, due_date: e.target.value})}
-                        className="bg-gray-800 border-gray-700 text-white"
+                        className="bg-gray-800 border-gray-700 text-white text-sm sm:text-base"
                       />
                     </div>
 
-                    <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border-2 border-blue-500/30 shadow-lg">
-                      <Checkbox
-                        id="recurring"
-                        checked={formData.is_recurring}
-                        onCheckedChange={(checked) => setFormData({...formData, is_recurring: !!checked})}
-                        className="border-blue-400 text-blue-400 focus:ring-blue-400 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                      />
-                      <Label htmlFor="recurring" className="text-blue-200 font-semibold cursor-pointer text-base">
-                        📝 Criar Predefinição
-                      </Label>
-                    </div>
-
-                    {formData.is_recurring && (
-                      <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
-                        <p className="text-blue-200 text-sm">
-                          ✨ Esta transação será salva como predefinição para facilitar futuras entradas similares.
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border-2 border-green-500/30 shadow-lg">
+                    <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border-2 border-green-500/30 shadow-lg">
                       <Checkbox
                         id="is_paid"
                         checked={formData.is_paid}
                         onCheckedChange={(checked) => setFormData({...formData, is_paid: !!checked})}
-                        className="border-green-400 text-green-400 focus:ring-green-400 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                        className="border-green-400 text-green-400 focus:ring-green-400 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500 flex-shrink-0"
                       />
-                      <Label htmlFor="is_paid" className="text-green-200 font-semibold cursor-pointer text-base">
-                        <CheckCircle2 className="inline mr-2 h-5 w-5" />
+                      <Label htmlFor="is_paid" className="text-green-200 font-semibold cursor-pointer text-sm sm:text-base flex items-center">
+                        <CheckCircle2 className="inline mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                         Marcar como Pago
                       </Label>
                     </div>
                   </>
                 )}
 
-                {/* Opção para salvar como template (para receitas também) */}
-                {!formData.is_recurring && (
-                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border-2 border-purple-500/30 shadow-lg">
-                    <Checkbox
-                      id="save_template"
-                      checked={saveAsTemplate}
-                      onCheckedChange={(checked) => setSaveAsTemplate(!!checked)}
-                      className="border-purple-400 text-purple-400 focus:ring-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
-                    />
-                    <Label htmlFor="save_template" className="text-purple-200 font-semibold cursor-pointer text-base">
-                      <Save className="inline mr-2 h-4 w-4" />
-                      Salvar como Predefinição
-                    </Label>
-                  </div>
-                )}
+                {/* Opção para salvar como template (para todas as transações) */}
+                <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border-2 border-purple-500/30 shadow-lg">
+                  <Checkbox
+                    id="save_template"
+                    checked={saveAsTemplate}
+                    onCheckedChange={(checked) => setSaveAsTemplate(!!checked)}
+                    className="border-purple-400 text-purple-400 focus:ring-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 flex-shrink-0"
+                  />
+                  <Label htmlFor="save_template" className="text-purple-200 font-semibold cursor-pointer text-sm sm:text-base flex items-center">
+                    <Save className="inline mr-1 sm:mr-2 h-4 w-4 flex-shrink-0" />
+                    Salvar como Predefinição
+                  </Label>
+                </div>
 
                 <Button
                   type="submit"
                   disabled={saving}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-sm sm:text-base p-3 sm:p-4"
                 >
                   {saving ? 'Salvando...' : `Adicionar ${formData.type === 'income' ? 'Receita' : 'Despesa'}`}
                 </Button>

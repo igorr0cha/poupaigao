@@ -73,9 +73,9 @@ const SimplifiedIndex = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("${backgroundSvg}")` }}></div>
       
-      <div className="relative z-10 space-y-8 p-8">
+      <div className="relative z-10 space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-6 lg:p-8">
         {/* Primeira linha: Receitas, Despesas, Patrimônio líquido */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-300 capitalize">
@@ -132,7 +132,7 @@ const SimplifiedIndex = () => {
         </div>
 
         {/* Segunda linha: Valor em Conta, Despesas Pendentes, Saldo Projetado */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-300">
@@ -189,19 +189,19 @@ const SimplifiedIndex = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+          <div className="space-y-4 sm:space-y-6">
             <SimplifiedQuickActions onTransactionAdded={handleUpdate} />
             <FinancialBarChart data={monthlyData} />
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <SimplifiedUpcomingBills onUpdate={handleUpdate} />
             <GoalsOverview goals={goals} />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           <ExpenseChart data={expensesByCategory} />
           <Tabs defaultValue="overview" className="backdrop-blur-sm bg-black/40 border-green-800/30 rounded-lg">
             <TabsList className="grid w-full grid-cols-2 bg-gray-800/50">
