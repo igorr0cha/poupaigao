@@ -12,6 +12,7 @@ export const useSimplifiedFinancialData = () => {
   const [investments, setInvestments] = useState([]);
   const [investmentTypes, setInvestmentTypes] = useState([]);
   const [accountBalance, setAccountBalance] = useState(0);
+  const [templates, setTemplates] = useState([]);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -26,7 +27,8 @@ export const useSimplifiedFinancialData = () => {
         goalsRes,
         investmentsRes,
         investmentTypesRes,
-        profileRes
+        profileRes,
+        templatesRes
       ] = await Promise.all([
         supabase
           .from('transactions')
@@ -40,7 +42,8 @@ export const useSimplifiedFinancialData = () => {
         supabase
           .from('financial_goals')
           .select('*')
-          .eq('user_id', user.id),
+          .eq('user_id', user.id)
+          .order('last_modified', { ascending: false }),
         supabase
           .from('investments')
           .select(`
@@ -55,7 +58,9 @@ export const useSimplifiedFinancialData = () => {
           .from('profiles')
           .select('account_balance')
           .eq('id', user.id)
-          .single()
+          .single(),
+        supabase
+          .rpc('get_transaction_templates_for_user', { user_id_param: user.id })
       ]);
 
       if (transactionsRes.error) throw transactionsRes.error;
@@ -63,12 +68,14 @@ export const useSimplifiedFinancialData = () => {
       if (goalsRes.error) throw goalsRes.error;
       if (investmentsRes.error) throw investmentsRes.error;
       if (investmentTypesRes.error) throw investmentTypesRes.error;
+      if (templatesRes.error) throw templatesRes.error;
 
       setTransactions(transactionsRes.data || []);
       setCategories(categoriesRes.data || []);
       setGoals(goalsRes.data || []);
       setInvestments(investmentsRes.data || []);
       setInvestmentTypes(investmentTypesRes.data || []);
+      setTemplates(templatesRes.data || []);
 
       // Set account balance from profiles table, default to 0 if not found
       if (profileRes.data) {
@@ -248,9 +255,8 @@ export const useSimplifiedFinancialData = () => {
   };
 
   const getProjectedBalance = () => {
-    const currentBalance = getCurrentBalance();
     const unpaidExpenses = getUnpaidExpenses();
-    return currentBalance - unpaidExpenses;
+    return accountBalance - unpaidExpenses;
   };
 
   const getNetWorth = () => {
@@ -327,6 +333,7 @@ export const useSimplifiedFinancialData = () => {
 
       if (error) return { error };
       
+      // Não reduzir do saldo da conta quando reservar dinheiro
       await fetchData();
       return { error: null };
     } catch (error) {
@@ -448,6 +455,66 @@ export const useSimplifiedFinancialData = () => {
     }
   };
 
+  const addTemplate = async (templateData: any) => {
+    if (!user) return { error: new Error('User not authenticated') };
+
+    try {
+      const { error } = await supabase
+        .rpc('create_transaction_template', {
+          template_data: {
+            ...templateData,
+            user_id: user.id
+          }
+        });
+
+      if (error) return { error };
+      
+      await fetchData();
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
+  };
+
+  const updateTemplate = async (id: string, updates: any) => {
+    if (!user) return { error: new Error('User not authenticated') };
+
+    try {
+      const { error } = await supabase
+        .rpc('update_transaction_template', {
+          template_id: id,
+          template_updates: updates,
+          user_id_param: user.id
+        });
+
+      if (error) return { error };
+      
+      await fetchData();
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
+  };
+
+  const deleteTemplate = async (id: string) => {
+    if (!user) return { error: new Error('User not authenticated') };
+
+    try {
+      const { error } = await supabase
+        .rpc('delete_transaction_template', {
+          template_id: id,
+          user_id_param: user.id
+        });
+
+      if (error) return { error };
+      
+      await fetchData();
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
+  };
+
   const refetch = fetchData;
 
   return {
@@ -472,11 +539,15 @@ export const useSimplifiedFinancialData = () => {
     addInvestment,
     updateInvestment,
     deleteInvestment,
+    addTemplate,
+    updateTemplate,
+    deleteTemplate,
     transactions,
     categories,
     goals,
     investments,
     investmentTypes,
+    templates,
     accountBalance,
     loading,
     refetch

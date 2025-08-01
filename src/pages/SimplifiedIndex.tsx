@@ -131,8 +131,8 @@ const SimplifiedIndex = () => {
           </Card>
         </div>
 
-        {/* Segunda linha: Valor em Conta, Saldo Atual, Despesas Pendentes, Saldo Projetado */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Segunda linha: Valor em Conta, Despesas Pendentes, Saldo Projetado */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-300">
@@ -151,23 +151,6 @@ const SimplifiedIndex = () => {
             </CardContent>
           </Card>
 
-          <Card className="backdrop-blur-sm bg-black/40 border-green-800/30 shadow-2xl">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
-                Saldo Atual
-                <span className="ml-2 px-2 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded-full">MENSAL</span>
-              </CardTitle>
-              <Calculator className="h-4 w-4 text-cyan-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-cyan-400">
-                <AnimatedCounter value={currentBalance} prefix="R$ " />
-              </div>
-              <p className="text-xs text-gray-400 mt-1">
-                Valor em conta - Despesas pagas
-              </p>
-            </CardContent>
-          </Card>
 
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -200,7 +183,7 @@ const SimplifiedIndex = () => {
                 <AnimatedCounter value={projectedBalance} prefix="R$ " />
               </div>
               <p className="text-xs text-gray-400 mt-1">
-                Após pagamento das pendências
+                Valor em conta - Despesas pendentes
               </p>
             </CardContent>
           </Card>

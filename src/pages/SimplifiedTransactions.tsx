@@ -8,11 +8,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2 } from 'lucide-react';
+import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 const SimplifiedTransactions = () => {
-  const { categories, addTransaction, loading } = useSimplifiedFinancialData();
+  const { categories, addTransaction, loading, templates, addTemplate } = useSimplifiedFinancialData();
 
   const [formData, setFormData] = useState({
     type: 'expense' as 'income' | 'expense',
@@ -27,6 +27,8 @@ const SimplifiedTransactions = () => {
     is_paid: false
   });
   const [saving, setSaving] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,15 +52,34 @@ const SimplifiedTransactions = () => {
           transactionData.due_date = formData.due_date;
         }
         
-        if (formData.is_recurring) {
-          transactionData.is_recurring = true;
-          transactionData.recurring_day = formData.recurring_day;
+        if (formData.is_recurring && formData.recurring_day) {
+          // Criar template para futuras transações
+          const templateData = {
+            type: formData.type,
+            description: formData.description,
+            amount: parseFloat(formData.amount),
+            category_id: formData.category_id || null
+          };
+          
+          await addTemplate(templateData);
         }
       }
 
       const { error } = await addTransaction(transactionData);
 
       if (error) throw error;
+
+      // Salvar como template se solicitado
+      if (saveAsTemplate) {
+        const templateData = {
+          type: formData.type,
+          description: formData.description,
+          amount: parseFloat(formData.amount),
+          category_id: formData.category_id || null
+        };
+        
+        await addTemplate(templateData);
+      }
 
       toast({
         title: "Transação adicionada!",
@@ -78,6 +99,7 @@ const SimplifiedTransactions = () => {
         recurring_day: new Date().getDate(),
         is_paid: false
       });
+      setSaveAsTemplate(false);
     } catch (error: any) {
       toast({
         title: "Erro",
@@ -87,6 +109,17 @@ const SimplifiedTransactions = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleTemplateSelect = (template: any) => {
+    setFormData({
+      ...formData,
+      type: template.type,
+      description: template.description,
+      amount: template.amount.toString(),
+      category_id: template.category_id || '',
+    });
+    setShowTemplates(false);
   };
 
   if (loading) {
@@ -123,6 +156,56 @@ const SimplifiedTransactions = () => {
               <CardTitle className="text-white">Detalhes da Transação</CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Seção de Templates */}
+              {templates.length > 0 && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border-2 border-blue-500/30">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-white font-medium flex items-center">
+                      <BookOpen className="mr-2 h-4 w-4 text-blue-400" />
+                      Predefinições Disponíveis
+                    </h3>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowTemplates(!showTemplates)}
+                      className="text-blue-400 hover:text-blue-300"
+                    >
+                      {showTemplates ? 'Ocultar' : 'Mostrar'}
+                    </Button>
+                  </div>
+                  
+                  {showTemplates && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {templates.map((template: any) => (
+                        <Button
+                          key={template.id}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleTemplateSelect(template)}
+                          className="justify-start text-left border-blue-500/30 text-blue-200 hover:bg-blue-500/20"
+                        >
+                          <div className="flex items-center">
+                            {template.type === 'income' ? (
+                              <ArrowUpRight className="mr-2 h-3 w-3 text-green-400" />
+                            ) : (
+                              <ArrowDownRight className="mr-2 h-3 w-3 text-red-400" />
+                            )}
+                            <div>
+                              <div className="font-medium">{template.description}</div>
+                              <div className="text-xs opacity-75">
+                                R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </div>
+                            </div>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex gap-4">
                   <Button
@@ -264,22 +347,15 @@ const SimplifiedTransactions = () => {
                         className="border-blue-400 text-blue-400 focus:ring-blue-400 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                       />
                       <Label htmlFor="recurring" className="text-blue-200 font-semibold cursor-pointer text-base">
-                        🔄 Despesa Recorrente
+                        📝 Criar Predefinição
                       </Label>
                     </div>
 
                     {formData.is_recurring && (
-                      <div className="space-y-2">
-                        <Label htmlFor="recurring-day" className="text-gray-300">Dia do mês para recorrência</Label>
-                        <Input
-                          id="recurring-day"
-                          type="number"
-                          value={formData.recurring_day}
-                          onChange={(e) => setFormData({...formData, recurring_day: parseInt(e.target.value)})}
-                          className="bg-gray-800 border-gray-700 text-white"
-                          min="1"
-                          max="31"
-                        />
+                      <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                        <p className="text-blue-200 text-sm">
+                          ✨ Esta transação será salva como predefinição para facilitar futuras entradas similares.
+                        </p>
                       </div>
                     )}
 
@@ -296,6 +372,22 @@ const SimplifiedTransactions = () => {
                       </Label>
                     </div>
                   </>
+                )}
+
+                {/* Opção para salvar como template (para receitas também) */}
+                {!formData.is_recurring && (
+                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border-2 border-purple-500/30 shadow-lg">
+                    <Checkbox
+                      id="save_template"
+                      checked={saveAsTemplate}
+                      onCheckedChange={(checked) => setSaveAsTemplate(!!checked)}
+                      className="border-purple-400 text-purple-400 focus:ring-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
+                    />
+                    <Label htmlFor="save_template" className="text-purple-200 font-semibold cursor-pointer text-base">
+                      <Save className="inline mr-2 h-4 w-4" />
+                      Salvar como Predefinição
+                    </Label>
+                  </div>
                 )}
 
                 <Button

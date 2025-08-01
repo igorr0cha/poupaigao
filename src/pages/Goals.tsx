@@ -245,7 +245,7 @@ const Goals = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {goals.map((goal) => {
+          {goals.sort((a, b) => new Date(b.last_modified || b.updated_at).getTime() - new Date(a.last_modified || a.updated_at).getTime()).map((goal) => {
             const progress = (Number(goal.current_amount) / Number(goal.target_amount)) * 100;
             
             return (
