@@ -150,23 +150,30 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
       )}
 
       <div className={cn(
-        "fixed left-0 top-0 h-full z-50 transition-all duration-300 ease-in-out",
+        "fixed left-0 h-full z-50 transition-all duration-300 ease-in-out",
         isMobile 
           ? isCollapsed 
             ? "-translate-x-full w-0" 
-            : "translate-x-0 w-72 sm:w-80"
+            : "translate-x-0 w-64 sm:w-72 top-16 sm:top-20"
           : isCollapsed 
-            ? "w-0 -translate-x-full" 
-            : "w-64 lg:w-72 xl:w-80"
+            ? "w-0 -translate-x-full top-0" 
+            : "w-64 lg:w-72 xl:w-80 top-0"
       )}>
         {/* Backdrop blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 via-slate-900/98 to-black/95 backdrop-blur-xl border-r border-slate-700/50">
+        <div className={cn(
+          "absolute inset-0 bg-gradient-to-b from-slate-900/95 via-slate-900/98 to-black/95 backdrop-blur-xl border-r border-slate-700/50",
+          isMobile ? "h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)]" : "h-full"
+        )}>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent"></div>
         </div>
 
-        <div className="relative h-full flex flex-col">
-          {/* Header com Logo e Toggle */}
-          <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-700/50">
+        <div className={cn(
+          "relative flex flex-col",
+          isMobile ? "h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)]" : "h-full"
+        )}>
+          {/* Header com Logo e Toggle - Oculto no mobile */}
+          {!isMobile && (
+            <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-700/50">
             <div className="flex items-center justify-between">
               {/* Logo */}
               <div className="flex items-center justify-start min-w-0 flex-1">
@@ -224,16 +231,29 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
               </div>
             </div>
           </div>
+          )}
 
           {/* Navigation */}
-          <div className="flex-1 py-3 sm:py-4 lg:py-6 px-2 sm:px-3 lg:px-4 overflow-y-auto">
-            <div className="mb-3 sm:mb-4 lg:mb-6">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1 sm:px-2 lg:px-4">
+          <div className={cn(
+            "flex-1 overflow-y-auto",
+            isMobile ? "py-4 px-3" : "py-3 sm:py-4 lg:py-6 px-2 sm:px-3 lg:px-4"
+          )}>
+            <div className={cn(
+              "mb-4",
+              !isMobile && "mb-3 sm:mb-4 lg:mb-6"
+            )}>
+              <h3 className={cn(
+                "text-xs font-semibold text-slate-400 uppercase tracking-wider",
+                isMobile ? "px-2" : "px-1 sm:px-2 lg:px-4"
+              )}>
                 Menu Principal
               </h3>
             </div>
 
-            <nav className="space-y-1 sm:space-y-2">
+            <nav className={cn(
+              "space-y-2",
+              !isMobile && "space-y-1 sm:space-y-2"
+            )}>
               {navItems.map((item) => {
                 const isActive = location.pathname === item.url;
                 
@@ -243,7 +263,10 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
                       to={item.url}
                       onClick={isMobile ? onToggle : undefined}
                       className={cn(
-                        "relative flex items-center rounded-lg sm:rounded-xl lg:rounded-2xl transition-all duration-300 transform hover:scale-[1.02] p-2 sm:p-3 lg:p-4",
+                        "relative flex items-center transition-all duration-300 transform hover:scale-[1.02]",
+                        isMobile 
+                          ? "rounded-xl p-3" 
+                          : "rounded-lg sm:rounded-xl lg:rounded-2xl p-2 sm:p-3 lg:p-4",
                         isActive 
                           ? `bg-gradient-to-r ${item.color} text-white shadow-2xl border border-white/20` 
                           : 'text-slate-300 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-600/50'
@@ -251,22 +274,35 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
                     >
                       {/* Active indicator */}
                       {isActive && (
-                        <div className="absolute -left-1 top-1/2 transform -translate-y-1/2 w-1 h-4 sm:h-6 lg:h-8 bg-white rounded-full shadow-lg"></div>
+                        <div className={cn(
+                          "absolute -left-1 top-1/2 transform -translate-y-1/2 w-1 bg-white rounded-full shadow-lg",
+                          isMobile ? "h-6" : "h-4 sm:h-6 lg:h-8"
+                        )}></div>
                       )}
 
                       {/* Icon with glow effect */}
                       <div className="relative flex-shrink-0">
                         <item.icon className={cn(
-                          "h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 transition-all duration-200",
+                          "transition-all duration-200",
+                          isMobile ? "h-5 w-5" : "h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6",
                           isActive && "drop-shadow-lg"
                         )} />
                         {isActive && (
-                          <div className="absolute -inset-1 sm:-inset-2 bg-white/20 rounded-lg blur-sm animate-pulse"></div>
+                          <div className={cn(
+                            "absolute bg-white/20 rounded-lg blur-sm animate-pulse",
+                            isMobile ? "-inset-1" : "-inset-1 sm:-inset-2"
+                          )}></div>
                         )}
                       </div>
 
-                      <div className="ml-2 sm:ml-3 lg:ml-4 flex-1 min-w-0">
-                        <span className="font-semibold text-xs sm:text-sm lg:text-base block truncate">{item.title}</span>
+                      <div className={cn(
+                        "flex-1 min-w-0",
+                        isMobile ? "ml-3" : "ml-2 sm:ml-3 lg:ml-4"
+                      )}>
+                        <span className={cn(
+                          "font-semibold block truncate",
+                          isMobile ? "text-sm" : "text-xs sm:text-sm lg:text-base"
+                        )}>{item.title}</span>
                         <p className={cn(
                           "text-xs mt-0.5 transition-colors truncate",
                           isActive ? 'text-white/80' : 'text-slate-400'
@@ -277,13 +313,15 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
                       
                       {/* Arrow indicator */}
                       <ChevronRight className={cn(
-                        "h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 transition-all duration-200 flex-shrink-0",
+                        "transition-all duration-200 flex-shrink-0",
+                        isMobile ? "h-4 w-4" : "h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5",
                         isActive ? 'text-white/60' : 'text-slate-500 group-hover:text-slate-300'
                       )} />
 
                       {/* Hover effect overlay */}
                       <div className={cn(
-                        "absolute inset-0 rounded-lg sm:rounded-xl lg:rounded-2xl transition-opacity duration-200",
+                        "absolute inset-0 transition-opacity duration-200",
+                        isMobile ? "rounded-xl" : "rounded-lg sm:rounded-xl lg:rounded-2xl",
                         isActive 
                           ? "bg-white/10" 
                           : "bg-slate-700/0 group-hover:bg-slate-700/30"
@@ -296,31 +334,58 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-2 sm:p-3 lg:p-4 border-t border-slate-700/50">
-            <div className="space-y-1 sm:space-y-2">
+          <div className={cn(
+            "border-t border-slate-700/50",
+            isMobile ? "p-3" : "p-2 sm:p-3 lg:p-4"
+          )}>
+            <div className={cn(
+              "space-y-2",
+              !isMobile && "space-y-1 sm:space-y-2"
+            )}>
               {/* Settings */}
               <NavLink
                 to="/profile"
                 onClick={isMobile ? onToggle : undefined}
-                className="relative flex items-center rounded-lg sm:rounded-xl transition-all duration-300 p-2 sm:p-2.5 lg:p-3 text-slate-300 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-600/50"
+                className={cn(
+                  "relative flex items-center transition-all duration-300 text-slate-300 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-600/50",
+                  isMobile ? "rounded-xl p-3" : "rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3"
+                )}
               >
-                <Settings className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 flex-shrink-0" />
-                <span className="ml-2 sm:ml-2.5 lg:ml-3 font-medium text-xs sm:text-sm lg:text-base truncate">Configurações</span>
+                <Settings className={cn(
+                  "flex-shrink-0",
+                  isMobile ? "h-4 w-4" : "h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5"
+                )} />
+                <span className={cn(
+                  "font-medium truncate",
+                  isMobile ? "ml-3 text-sm" : "ml-2 sm:ml-2.5 lg:ml-3 text-xs sm:text-sm lg:text-base"
+                )}>Configurações</span>
               </NavLink>
               
               {/* Logout */}
               <Button
                 onClick={handleSignOut}
                 variant="ghost"
-                className="w-full flex items-center justify-start rounded-lg sm:rounded-xl transition-all duration-300 p-2 sm:p-2.5 lg:p-3 text-slate-300 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/30 text-xs sm:text-sm lg:text-base h-auto"
+                className={cn(
+                  "w-full flex items-center justify-start transition-all duration-300 text-slate-300 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/30 h-auto",
+                  isMobile ? "rounded-xl p-3 text-sm" : "rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-xs sm:text-sm lg:text-base"
+                )}
               >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 flex-shrink-0" />
-                <span className="ml-2 sm:ml-2.5 lg:ml-3 font-medium">Sair</span>
+                <LogOut className={cn(
+                  "flex-shrink-0",
+                  isMobile ? "h-4 w-4" : "h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5"
+                )} />
+                <span className={cn(
+                  "font-medium",
+                  isMobile ? "ml-3" : "ml-2 sm:ml-2.5 lg:ml-3"
+                )}>Sair</span>
               </Button>
             </div>
 
             {/* Version info */}
-            <div className="mt-2 sm:mt-3 lg:mt-4 pt-2 sm:pt-3 lg:pt-4 border-t border-slate-700/30">
+            <div className={cn(
+              "border-t border-slate-700/30",
+              isMobile ? "mt-4 pt-4" : "mt-2 sm:mt-3 lg:mt-4 pt-2 sm:pt-3 lg:pt-4"
+            )}>
               <div className="text-center">
                 <p className="text-xs text-slate-500">v2.0.0</p>
                 <p className="text-xs text-slate-600 mt-1">© 2024 PoupaIgão</p>
@@ -330,26 +395,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
         </div>
       </div>
 
-      {/* Botão flutuante para mobile quando recolhido */}
-      {isMobile && isCollapsed && (
-        <div className="fixed top-2 left-2 z-50">
-          <Button
-            onClick={onToggle}
-            className="relative group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 border border-slate-600/50 shadow-2xl p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105"
-          >
-            <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-green-400/20 rounded-xl sm:rounded-2xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-            <div className="relative flex items-center space-x-1 sm:space-x-2">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 rounded-lg sm:rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-slate-600/50">
-                  <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
-                </div>
-              </div>
-              <Menu className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
-            </div>
-          </Button>
-        </div>
-      )}
     </>
   );
 };

@@ -15,6 +15,7 @@ import MonthlyHistory from '@/pages/MonthlyHistory';
 import Reports from '@/pages/Reports';
 import Profile from '@/pages/Profile';
 import AppSidebar from '@/components/AppSidebar';
+import MobileHeader from '@/components/MobileHeader';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -42,17 +43,23 @@ function AppContent() {
           />
           <Route path="/*" element={
             <ProtectedRoute>
-              <div className="flex min-h-screen">
+              <div className="flex min-h-screen relative">
+                {/* Mobile Header */}
+                {isMobile && (
+                  <MobileHeader onToggleSidebar={toggleSidebar} />
+                )}
+                
                 <AppSidebar isCollapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+                
                 <main className={cn(
                   "flex-1 transition-all duration-300 ease-in-out min-h-screen",
                   isMobile 
-                    ? "ml-0 w-full" 
+                    ? "ml-0 w-full pt-16 sm:pt-20" 
                     : sidebarCollapsed 
                       ? "ml-0 w-full" 
-                      : "ml-80 w-[calc(100%-320px)]"
+                      : "ml-64 lg:ml-72 xl:ml-80 w-auto"
                 )}>
-                  <div className="w-full h-full p-4 sm:p-6 lg:p-8">
+                  <div className="w-full h-full p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-auto">
                     <Routes>
                       <Route path="/" element={<SimplifiedIndex />} />
                       <Route path="/revenues" element={<Revenues />} />
