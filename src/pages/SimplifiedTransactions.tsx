@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save } from 'lucide-react';
+import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 const SimplifiedTransactions = () => {
@@ -96,14 +96,22 @@ const SimplifiedTransactions = () => {
   };
 
   const handleTemplateSelect = (template: any) => {
+    const currentDate = new Date();
     setFormData({
       ...formData,
       type: template.type,
       description: template.description,
       amount: template.amount.toString(),
       category_id: template.category_id || '',
+      competence_month: currentDate.getMonth() + 1,
+      competence_year: currentDate.getFullYear(),
     });
     setShowTemplates(false);
+    
+    toast({
+      title: "Predefinição aplicada",
+      description: "Os campos foram preenchidos automaticamente. Ajuste o valor se necessário.",
+    });
   };
 
   if (loading) {
@@ -140,54 +148,85 @@ const SimplifiedTransactions = () => {
               <CardTitle className="text-white text-lg sm:text-xl">Detalhes da Transação</CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
-              {/* Seção de Templates */}
+              {/* Seção de Predefinições Rápidas */}
               {templates.length > 0 && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border-2 border-blue-500/30">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-                    <h3 className="text-white font-medium flex items-center text-sm sm:text-base">
-                      <BookOpen className="mr-2 h-4 w-4 text-blue-400 flex-shrink-0" />
-                      Predefinições Disponíveis
-                    </h3>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowTemplates(!showTemplates)}
-                      className="text-blue-400 hover:text-blue-300 self-start sm:self-auto text-xs sm:text-sm px-2 py-1"
-                    >
-                      {showTemplates ? 'Ocultar' : 'Mostrar'}
-                    </Button>
-                  </div>
-                  
-                  {showTemplates && (
-                    <div className="grid grid-cols-1 gap-2">
-                      {templates.map((template: any) => (
-                        <Button
-                          key={template.id}
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleTemplateSelect(template)}
-                          className="justify-start text-left border-blue-500/30 text-blue-200 hover:bg-blue-500/20 p-2 h-auto"
-                        >
-                          <div className="flex items-center w-full">
-                            {template.type === 'income' ? (
-                              <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
-                            ) : (
-                              <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
-                              <div className="text-xs opacity-75">
-                                R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-800/30 shadow-xl mb-4 sm:mb-6">
+                  <CardHeader className="pb-3 p-3 sm:p-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-blue-200 flex items-center text-sm sm:text-base">
+                        <Zap className="mr-2 h-4 w-4 text-blue-400" />
+                        Predefinições Rápidas
+                      </CardTitle>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowTemplates(!showTemplates)}
+                        className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                      >
+                        {showTemplates ? 'Ocultar' : 'Ver Todas'}
+                        <BookOpen className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-3 sm:p-4 pt-0">
+                    {!showTemplates ? (
+                      // Exibir apenas os primeiros 3 templates como botões rápidos
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                        {templates.slice(0, 3).map((template: any) => (
+                          <Button
+                            key={template.id}
+                            type="button"
+                            variant="outline"
+                            onClick={() => handleTemplateSelect(template)}
+                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
+                          >
+                            <div className="flex items-center w-full">
+                              {template.type === 'income' ? (
+                                <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
+                              ) : (
+                                <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
+                                <div className="text-xs opacity-75">
+                                  R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                          </Button>
+                        ))}
+                      </div>
+                    ) : (
+                      // Exibir todos os templates em formato de lista
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-h-48 overflow-y-auto pr-2">
+                        {templates.map((template: any) => (
+                          <Button
+                            key={template.id}
+                            type="button"
+                            variant="outline"
+                            onClick={() => handleTemplateSelect(template)}
+                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
+                          >
+                            <div className="flex items-center w-full">
+                              {template.type === 'income' ? (
+                                <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
+                              ) : (
+                                <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
+                                <div className="text-xs opacity-75">
+                                  R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                            </div>
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">

@@ -42,7 +42,7 @@ export const useSimplifiedFinancialData = () => {
           .from('financial_goals')
           .select('*')
           .eq('user_id', user.id)
-          .order('updated_at', { ascending: false }),
+          .order('last_modified', { ascending: false }),
         supabase
           .from('investments')
           .select(`
@@ -438,7 +438,10 @@ export const useSimplifiedFinancialData = () => {
     try {
       const { error } = await supabase
         .from('financial_goals')
-        .update(updates)
+        .update({
+          ...updates,
+          last_modified: new Date().toISOString()
+        })
         .eq('id', id)
         .eq('user_id', user.id);
 
