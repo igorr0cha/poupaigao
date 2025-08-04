@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useFinancialData } from '@/hooks/useFinancialData';
+import { useSimplifiedFinancialData } from '@/hooks/useSimplifiedFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Edit, Trash2, Receipt, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Receipt, TrendingUp, TrendingDown, Calendar, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 const Transactions = () => {
@@ -19,6 +20,8 @@ const Transactions = () => {
     markTransactionAsPaid, 
     loading 
   } = useFinancialData();
+  
+  const { templates } = useSimplifiedFinancialData();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -113,6 +116,27 @@ const Transactions = () => {
     }
   };
 
+  const handleTemplateSelect = (template: any) => {
+    const currentDate = new Date();
+    setNewTransaction({
+      ...newTransaction,
+      type: template.type,
+      description: template.description,
+      amount: template.amount.toString(),
+      category_id: template.category_id || '',
+      competence_month: currentDate.getMonth() + 1,
+      competence_year: currentDate.getFullYear(),
+    });
+    
+    toast({
+      title: "Predefinição aplicada",
+      description: "Os campos foram preenchidos automaticamente. Ajuste o valor se necessário.",
+    });
+  };
+
+  // Filtrar templates baseado no tipo selecionado
+  const filteredTemplates = templates.filter(template => template.type === newTransaction.type);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900 flex items-center justify-center">
@@ -149,6 +173,44 @@ const Transactions = () => {
                 <DialogTitle className="text-white">Nova Transação</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
+                {/* Seção de Predefinições Rápidas */}
+                {filteredTemplates.length > 0 && (
+                  <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-800/30 shadow-xl">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-blue-200 flex items-center text-sm">
+                        <Zap className="mr-2 h-4 w-4 text-blue-400" />
+                        Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto">
+                        {filteredTemplates.map((template: any) => (
+                          <Button
+                            key={template.id}
+                            type="button"
+                            variant="outline"
+                            onClick={() => handleTemplateSelect(template)}
+                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
+                          >
+                            <div className="flex items-center w-full">
+                              {template.type === 'income' ? (
+                                <ArrowUpRight className="mr-2 h-4 w-4 text-green-400 flex-shrink-0" />
+                              ) : (
+                                <ArrowDownRight className="mr-2 h-4 w-4 text-red-400 flex-shrink-0" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-sm truncate">{template.description}</div>
+                                <div className="text-xs opacity-75">
+                                  R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                            </div>
+                          </Button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="type" className="text-gray-300">Tipo</Label>
