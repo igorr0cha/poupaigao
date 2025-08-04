@@ -129,6 +129,8 @@ const SimplifiedTransactions = () => {
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
+  const filteredTemplates = templates.filter(template => template.type === formData.type);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("${backgroundSvg}")` }}></div>
