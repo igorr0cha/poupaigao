@@ -151,11 +151,11 @@ const SimplifiedTransactions = () => {
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
               {/* Seção de Predefinições Rápidas */}
-              {templates.length > 0 && (
+              {filteredTemplates.length > 0 && (
                 <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-800/30 shadow-xl mb-4 sm:mb-6">
                   <CardHeader className="pb-3 p-3 sm:p-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-blue-200 flex items-center text-sm sm:text-base">
+                      <CardTitle className="text-white flex items-center text-sm sm:text-base">
                         <Zap className="mr-2 h-4 w-4 text-blue-400" />
                         Predefinições Rápidas
                       </CardTitle>
@@ -175,14 +175,14 @@ const SimplifiedTransactions = () => {
                     {!showTemplates ? (
                       // Exibir apenas os primeiros 3 templates como botões rápidos
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-                        {templates.slice(0, 3).map((template: any) => (
+                        {filteredTemplates.slice(0, 3).map((template: any) => (
                           <Button
                             key={template.id}
                             type="button"
                             variant="outline"
                             onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
-                          >
+                            className="justify-start text-left border-blue-500/60 bg-blue-900/30 text-white hover:bg-blue-800/50 hover:border-blue-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
+                            >
                             <div className="flex items-center w-full">
                               {template.type === 'income' ? (
                                 <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
@@ -202,14 +202,14 @@ const SimplifiedTransactions = () => {
                     ) : (
                       // Exibir todos os templates em formato de lista
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-h-48 overflow-y-auto pr-2">
-                        {templates.map((template: any) => (
+                        {filteredTemplates.map((template: any) => (
                           <Button
                             key={template.id}
                             type="button"
                             variant="outline"
                             onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
-                          >
+                            className="justify-start text-left border-blue-500/60 bg-blue-900/30 text-white hover:bg-blue-800/50 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
+                            >
                             <div className="flex items-center w-full">
                               {template.type === 'income' ? (
                                 <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
