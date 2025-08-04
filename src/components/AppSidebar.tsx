@@ -153,10 +153,10 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
         "fixed left-0 z-50 transition-all duration-300 ease-in-out",
         isMobile 
           ? isCollapsed 
-            ? "-translate-x-full w-0 h-0" 
+            ? "-translate-x-full" 
             : "translate-x-0 w-64 sm:w-72 top-16 sm:top-20 h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)]"
           : isCollapsed 
-            ? "w-0 -translate-x-full top-0 h-0" 
+            ? "w-0 -translate-x-full" 
             : "w-64 lg:w-72 xl:w-80 top-0 h-full"
       )}>
         {/* Backdrop blur */}
