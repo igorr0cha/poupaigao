@@ -108,11 +108,11 @@ const SimplifiedQuickActions = ({ onTransactionAdded }: SimplifiedQuickActionsPr
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Nova Transação */}
           <Button 
             onClick={() => navigate('/transactions')}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white w-full"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white w-full whitespace-nowrap"
           >
             <Plus className="mr-2 h-4 w-4" />
             Nova Transação

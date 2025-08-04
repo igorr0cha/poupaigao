@@ -261,7 +261,7 @@ const Expenses = () => {
             <p className="text-gray-400 mt-2">Gerencie suas categorias e despesas</p>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <Select value={viewMode} onValueChange={(value: 'monthly' | 'yearly') => {
               setViewMode(value);
               if (value === 'yearly') {
@@ -271,20 +271,26 @@ const Expenses = () => {
                 setSelectedPeriod(`${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`);
               }
             }}>
-              <SelectTrigger className="w-32 bg-gray-800 border-gray-700 text-white">
+              <SelectTrigger className="w-28 sm:w-32 bg-gray-800 border-gray-700 text-white">
                 <SelectValue />
               </SelectTrigger>
+
               <SelectContent className="bg-gray-800 border-gray-700">
                 <SelectItem value="monthly" className="text-white">Mensal</SelectItem>
                 <SelectItem value="yearly" className="text-white">Anual</SelectItem>
               </SelectContent>
+
             </Select>
 
-            <Calendar className="h-5 w-5 text-gray-400" />
+            <Calendar className="h-5 w-5 text-gray-400 flex-shrink-0" />
+
+
             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-              <SelectTrigger className="w-48 bg-gray-800 border-gray-700 text-white">
+
+              <SelectTrigger className="w-36 sm:w-48 bg-gray-800 border-gray-700 text-white">
                 <SelectValue />
               </SelectTrigger>
+
               <SelectContent className="bg-gray-800 border-gray-700">
                 {generatePeriodOptions().map((period) => (
                   <SelectItem key={period.value} value={period.value} className="text-white">
@@ -292,7 +298,9 @@ const Expenses = () => {
                   </SelectItem>
                 ))}
               </SelectContent>
+
             </Select>
+
           </div>
         </div>
 
