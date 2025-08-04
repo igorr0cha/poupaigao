@@ -21,7 +21,7 @@ const Transactions = () => {
     loading 
   } = useFinancialData();
   
-  const { templates } = useSimplifiedFinancialData();
+  const { templates, addTemplate } = useSimplifiedFinancialData();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -37,6 +37,8 @@ const Transactions = () => {
     competence_month: new Date().getMonth() + 1,
     competence_year: new Date().getFullYear()
   });
+
+  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
 
   const handleAddTransaction = async () => {
     if (!newTransaction.amount || !newTransaction.description) {
@@ -68,6 +70,18 @@ const Transactions = () => {
 
       if (error) throw error;
 
+      // Salvar como template se checkbox marcado
+      if (saveAsTemplate) {
+        const templateData = {
+          type: newTransaction.type,
+          amount: parseFloat(newTransaction.amount),
+          description: newTransaction.description,
+          category_id: newTransaction.category_id || null,
+        };
+        
+        await addTemplate(templateData);
+      }
+
       toast({
         title: "Transação adicionada!",
         description: `${newTransaction.type === 'income' ? 'Receita' : 'Despesa'} registrada com sucesso.`,
@@ -85,6 +99,7 @@ const Transactions = () => {
         competence_month: new Date().getMonth() + 1,
         competence_year: new Date().getFullYear()
       });
+      setSaveAsTemplate(false);
       setIsDialogOpen(false);
     } catch (error: any) {
       toast({
@@ -359,6 +374,24 @@ const Transactions = () => {
                     </div>
                   </>
                 )}
+
+                {/* Checkbox para salvar como predefinição */}
+                <div className="flex items-center space-x-3 p-4 bg-blue-800/20 border border-blue-600/30 rounded-lg">
+                  <Checkbox
+                    id="save-as-template"
+                    checked={saveAsTemplate}
+                    onCheckedChange={(checked) => setSaveAsTemplate(!!checked)}
+                    className="border-blue-400 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                  />
+                  <div>
+                    <Label htmlFor="save-as-template" className="text-blue-300 font-medium text-base">
+                      Salvar como Predefinição
+                    </Label>
+                    <p className="text-sm text-blue-200/70">
+                      Salve esta transação para reutilizar no futuro
+                    </p>
+                  </div>
+                </div>
 
                 <Button 
                   onClick={handleAddTransaction}

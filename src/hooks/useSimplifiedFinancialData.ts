@@ -27,7 +27,8 @@ export const useSimplifiedFinancialData = () => {
         goalsRes,
         investmentsRes,
         investmentTypesRes,
-        profileRes
+        profileRes,
+        templatesRes
       ] = await Promise.all([
         supabase
           .from('transactions')
@@ -57,7 +58,14 @@ export const useSimplifiedFinancialData = () => {
           .from('profiles')
           .select('account_balance')
           .eq('id', user.id)
-          .single()
+          .single(),
+        // Templates query with explicit typing
+        (supabase as any)
+          .from('transaction_templates')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
       ]);
 
       if (transactionsRes.error) throw transactionsRes.error;
@@ -65,13 +73,14 @@ export const useSimplifiedFinancialData = () => {
       if (goalsRes.error) throw goalsRes.error;
       if (investmentsRes.error) throw investmentsRes.error;
       if (investmentTypesRes.error) throw investmentTypesRes.error;
+      // Templates error handling is optional since table might not exist yet
 
       setTransactions(transactionsRes.data || []);
       setCategories(categoriesRes.data || []);
       setGoals(goalsRes.data || []);
       setInvestments(investmentsRes.data || []);
       setInvestmentTypes(investmentTypesRes.data || []);
-      setTemplates([]);
+      setTemplates(templatesRes.data || []);
 
       // Set account balance from profiles table, default to 0 if not found
       if (profileRes.data) {
@@ -455,8 +464,23 @@ export const useSimplifiedFinancialData = () => {
   };
 
   const addTemplate = async (templateData: any) => {
-    // Template functionality will be implemented when database table is ready
-    return { error: null };
+    if (!user) return { error: new Error('User not authenticated') };
+
+    try {
+      const { error } = await (supabase as any)
+        .from('transaction_templates')
+        .insert({
+          ...templateData,
+          user_id: user.id
+        });
+
+      if (error) return { error };
+      
+      await fetchData();
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   };
 
   const updateTemplate = async (id: string, updates: any) => {
