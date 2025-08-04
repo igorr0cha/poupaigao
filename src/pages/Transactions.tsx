@@ -190,10 +190,10 @@ const Transactions = () => {
               <div className="space-y-4">
                 {/* Seção de Predefinições Rápidas */}
                 {filteredTemplates.length > 0 && (
-                  <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-800/30 shadow-xl">
+                  <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/60 to-indigo-900/60 border-blue-600/60 shadow-xl">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-blue-200 flex items-center text-sm">
-                        <Zap className="mr-2 h-4 w-4 text-blue-400" />
+                      <CardTitle className="text-white flex items-center text-sm font-semibold">
+                        <Zap className="mr-2 h-4 w-4 text-blue-300" />
                         Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
                       </CardTitle>
                     </CardHeader>
@@ -205,7 +205,7 @@ const Transactions = () => {
                             type="button"
                             variant="outline"
                             onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-blue-500/40 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
+                            className="justify-start text-left border-blue-400/60 bg-blue-800/40 text-white hover:bg-blue-700/60 hover:border-blue-300/80 p-3 h-auto transition-all duration-200"
                           >
                             <div className="flex items-center w-full">
                               {template.type === 'income' ? (
@@ -214,8 +214,8 @@ const Transactions = () => {
                                 <ArrowDownRight className="mr-2 h-4 w-4 text-red-400 flex-shrink-0" />
                               )}
                               <div className="flex-1 min-w-0">
-                                <div className="font-medium text-sm truncate">{template.description}</div>
-                                <div className="text-xs opacity-75">
+                                <div className="font-medium text-sm truncate text-white">{template.description}</div>
+                                <div className="text-xs text-blue-200">
                                   R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                 </div>
                               </div>
