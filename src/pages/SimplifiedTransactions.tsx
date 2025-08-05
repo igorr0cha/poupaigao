@@ -181,7 +181,7 @@ const SimplifiedTransactions = () => {
                             type="button"
                             variant="outline"
                             onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-blue-500/60 bg-blue-900/30 text-white hover:bg-blue-800/50 hover:border-blue-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                             <div className="flex items-center w-full">
                               {template.type === 'income' ? (
@@ -208,7 +208,7 @@ const SimplifiedTransactions = () => {
                             type="button"
                             variant="outline"
                             onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-blue-500/60 bg-blue-900/30 text-white hover:bg-blue-800/50 hover:border-blue-400/60 p-3 h-auto transition-all duration-200"
+                            className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200"
                             >
                             <div className="flex items-center w-full">
                               {template.type === 'income' ? (
