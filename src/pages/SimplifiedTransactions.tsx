@@ -12,7 +12,7 @@ import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, S
 import { toast } from '@/components/ui/use-toast';
 
 const SimplifiedTransactions = () => {
-  const { categories, addTransaction, loading, templates, addTemplate } = useSimplifiedFinancialData();
+  const { categories, addTransaction, loading, templates, addTemplate, deleteTemplate } = useSimplifiedFinancialData();
 
   const [formData, setFormData] = useState({
     type: 'expense' as 'income' | 'expense',
@@ -114,6 +114,25 @@ const SimplifiedTransactions = () => {
     });
   };
 
+  const handleDeleteTemplate = async (templateId: string) => {
+    try {
+      const { error } = await deleteTemplate(templateId);
+      if (error) throw error;
+      
+      toast({
+        title: "Sucesso",
+        description: "Predefinição excluída com sucesso!",
+      });
+    } catch (error) {
+      console.error('Error deleting template:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao excluir predefinição.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900 flex items-center justify-center">
@@ -176,54 +195,80 @@ const SimplifiedTransactions = () => {
                       // Exibir apenas os primeiros 3 templates como botões rápidos
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                         {filteredTemplates.slice(0, 3).map((template: any) => (
-                          <Button
-                            key={template.id}
-                            type="button"
-                            variant="outline"
-                            onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl"
+                          <div key={template.id} className="relative">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => handleTemplateSelect(template)}
+                              className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl w-full"
                             >
-                            <div className="flex items-center w-full">
-                              {template.type === 'income' ? (
-                                <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
-                              ) : (
-                                <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
-                                <div className="text-xs opacity-75">
-                                  R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              <div className="flex items-center w-full">
+                                {template.type === 'income' ? (
+                                  <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
+                                ) : (
+                                  <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
+                                  <div className="text-xs opacity-75">
+                                    R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </Button>
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTemplate(template.id);
+                              }}
+                              className="absolute -top-1 -right-1 h-6 w-6 p-0 bg-red-500/80 hover:bg-red-600 text-white rounded-full"
+                            >
+                              ×
+                            </Button>
+                          </div>
                         ))}
                       </div>
                     ) : (
                       // Exibir todos os templates em formato de lista
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-h-48 overflow-y-auto pr-2">
                         {filteredTemplates.map((template: any) => (
-                          <Button
-                            key={template.id}
-                            type="button"
-                            variant="outline"
-                            onClick={() => handleTemplateSelect(template)}
-                            className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200"
+                          <div key={template.id} className="relative">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => handleTemplateSelect(template)}
+                              className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 w-full"
                             >
-                            <div className="flex items-center w-full">
-                              {template.type === 'income' ? (
-                                <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
-                              ) : (
-                                <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
-                                <div className="text-xs opacity-75">
-                                  R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              <div className="flex items-center w-full">
+                                {template.type === 'income' ? (
+                                  <ArrowUpRight className="mr-2 h-3 w-3 text-green-400 flex-shrink-0" />
+                                ) : (
+                                  <ArrowDownRight className="mr-2 h-3 w-3 text-red-400 flex-shrink-0" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-xs sm:text-sm truncate">{template.description}</div>
+                                  <div className="text-xs opacity-75">
+                                    R$ {Number(template.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </Button>
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTemplate(template.id);
+                              }}
+                              className="absolute -top-1 -right-1 h-6 w-6 p-0 bg-red-500/80 hover:bg-red-600 text-white rounded-full"
+                            >
+                              ×
+                            </Button>
+                          </div>
                         ))}
                       </div>
                     )}
