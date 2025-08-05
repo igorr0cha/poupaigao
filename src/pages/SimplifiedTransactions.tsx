@@ -228,9 +228,9 @@ const SimplifiedTransactions = () => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template.id);
                               }}
-                              className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-600 hover:bg-red-700 text-white"
+                              className="absolute -top-1.5 -right-1.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-600 hover:bg-red-700 text-white"
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                             </Button>
                           </div>
                         ))}

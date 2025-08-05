@@ -39,6 +39,7 @@ const Transactions = () => {
   });
 
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+  const [showAllTemplates, setShowAllTemplates] = useState(false);
 
   const handleAddTransaction = async () => {
     if (!newTransaction.amount || !newTransaction.description) {
@@ -192,14 +193,25 @@ const Transactions = () => {
                 {filteredTemplates.length > 0 && (
                   <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/60 to-indigo-900/60 border-blue-600/60 shadow-xl">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-white flex items-center text-sm font-semibold">
-                        <Zap className="mr-2 h-4 w-4 text-blue-300" />
-                        Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
-                      </CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-white flex items-center text-sm font-semibold">
+                          <Zap className="mr-2 h-4 w-4 text-blue-300" />
+                          Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
+                        </CardTitle>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowAllTemplates(!showAllTemplates)}
+                          className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs p-1.5"
+                        >
+                          {showAllTemplates ? 'Ver Menos' : 'Ver Todas'}
+                        </Button>
+                      </div>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto">
-                        {filteredTemplates.map((template: any) => (
+                        {(showAllTemplates ? filteredTemplates : filteredTemplates.slice(0, 3)).map((template: any) => (
                           <Button
                             key={template.id}
                             type="button"
