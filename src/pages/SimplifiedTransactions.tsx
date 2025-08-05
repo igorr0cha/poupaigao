@@ -175,11 +175,11 @@ const SimplifiedTransactions = () => {
               {/* Seção de Predefinições Rápidas */}
               {filteredTemplates.length > 0 && (
 
-                <Card className="backdrop-blur-sm bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-800/30 shadow-xl mb-4 sm:mb-6">
+                <Card className="bg-gradient-to-br from-green-900/80 to-emerald-900/80 border-green-800/30 shadow-xl mb-4 sm:mb-6">
                   <CardHeader className="pb-3 p-3 sm:p-4">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-white flex items-center text-sm sm:text-base">
-                        <Zap className="mr-2 h-4 w-4 text-blue-400" />
+                        <Zap className="mr-2 h-4 w-4 text-green-400" />
                         Predefinições Rápidas
                       </CardTitle>
                       <Button
@@ -187,7 +187,7 @@ const SimplifiedTransactions = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowTemplates(!showTemplates)}
-                        className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                        className="text-green-300 hover:text-green-100 hover:bg-green-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
                       >
                         {showTemplates ? 'Ocultar' : 'Ver Todas'}
                         <BookOpen className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
@@ -202,7 +202,7 @@ const SimplifiedTransactions = () => {
                           <div key={template.id} className="relative">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="ghost"
                               onClick={() => handleTemplateSelect(template)}
                               className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl w-full"
                             >
@@ -223,14 +223,14 @@ const SimplifiedTransactions = () => {
                             <Button
                               type="button"
                               variant="ghost"
-                              size="sm"
+                              size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template.id);
                               }}
-                              className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center bg-red-600 hover:bg-red-700"
+                              className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-600 hover:bg-red-700 text-white"
                             >
-                              <X className="h-4 w-4 text-white" />
+                              <X className="h-3 w-3" />
                             </Button>
                           </div>
                         ))}
@@ -242,7 +242,7 @@ const SimplifiedTransactions = () => {
                           <div key={template.id} className="relative">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="ghost"
                               onClick={() => handleTemplateSelect(template)}
                               className="justify-start text-left border-green-500/60 bg-green-900/30 text-white hover:bg-green-800/50 hover:border-green-400/60 p-3 h-auto transition-all duration-200 w-full"
                             >
@@ -273,7 +273,7 @@ const SimplifiedTransactions = () => {
                               ×
                             </Button>
                           </div>
-                        ))}
+                        ))}5
                       </div>
                     )}
                   </CardContent>
