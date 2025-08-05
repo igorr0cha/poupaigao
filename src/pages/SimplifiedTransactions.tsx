@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { /*...,*/ X } from 'lucide-react';
 
 const SimplifiedTransactions = () => {
   const { categories, addTransaction, loading, templates, addTemplate, deleteTemplate } = useSimplifiedFinancialData();
@@ -165,13 +166,16 @@ const SimplifiedTransactions = () => {
           </div>
 
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
+          
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-white text-lg sm:text-xl">Detalhes da Transação</CardTitle>
             </CardHeader>
+
             <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
               {/* Seção de Predefinições Rápidas */}
               {filteredTemplates.length > 0 && (
-                <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-800/30 shadow-xl mb-4 sm:mb-6">
+
+                <Card className="backdrop-blur-sm bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-800/30 shadow-xl mb-4 sm:mb-6">
                   <CardHeader className="pb-3 p-3 sm:p-4">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-white flex items-center text-sm sm:text-base">
@@ -224,9 +228,9 @@ const SimplifiedTransactions = () => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template.id);
                               }}
-                              className="absolute -top-1 -right-1 h-6 w-6 p-0 bg-red-500/80 hover:bg-red-600 text-white rounded-full"
+                              className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center bg-red-600 hover:bg-red-700"
                             >
-                              ×
+                              <X className="h-4 w-4 text-white" />
                             </Button>
                           </div>
                         ))}

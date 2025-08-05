@@ -100,7 +100,8 @@ const SimplifiedQuickActions = ({ onTransactionAdded }: SimplifiedQuickActionsPr
   };
 
   return (
-    <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
+    <Card className="backdrop-blur-sm bg-green-900/40 border-green-800/30">
+      
       <CardHeader>
         <CardTitle className="text-white flex items-center">
           <Settings className="mr-2 h-5 w-5 text-green-400" />
