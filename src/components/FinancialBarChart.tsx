@@ -47,8 +47,6 @@ export const FinancialBarChart = ({ data }: FinancialBarChartProps) => {
 
   return (
 
-    
-
       <div className='relative'>
         <br />
         <div className="mb-6">
@@ -57,7 +55,7 @@ export const FinancialBarChart = ({ data }: FinancialBarChartProps) => {
           </h3>
           <div className="h-px bg-gradient-to-r from-green-500/30 to-blue-500/30"></div>
         </div>
-
+          
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>

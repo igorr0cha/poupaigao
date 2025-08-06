@@ -478,7 +478,11 @@ const Expenses = () => {
                           <p className="text-lg font-bold text-red-400">
                             R$ {Number(expense.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p 
+                            className={`text-sm ${
+                              expense.is_paid ? 'text-gray-400' : 'text-yellow-500 font-bold'
+                            }`}
+                          >
                             {expense.is_paid ? 'Pago' : 'Pendente'}
                           </p>
                         </div>
