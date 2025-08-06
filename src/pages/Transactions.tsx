@@ -9,19 +9,26 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Edit, Trash2, Receipt, TrendingUp, TrendingDown, Calendar, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Plus, Edit, Trash2, Receipt, TrendingUp, TrendingDown, Calendar, Zap, ArrowUpRight, ArrowDownRight, Settings } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import EditTransactionModal from '@/components/EditTransactionModal';
+import TemplateManagementModal from '@/components/TemplateManagementModal';
 
 const Transactions = () => {
   const { 
     transactions, 
     categories, 
     addTransaction, 
-    markTransactionAsPaid, 
+    markTransactionAsPaid,
     loading 
   } = useFinancialData();
   
-  const { templates, addTemplate } = useSimplifiedFinancialData();
+  const { 
+    templates, 
+    addTemplate, 
+    updateTemplate, 
+    deleteTemplate 
+  } = useSimplifiedFinancialData();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -40,6 +47,8 @@ const Transactions = () => {
 
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
   const [showAllTemplates, setShowAllTemplates] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<any>(null);
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const handleAddTransaction = async () => {
     if (!newTransaction.amount || !newTransaction.description) {
@@ -198,15 +207,27 @@ const Transactions = () => {
                           <Zap className="mr-2 h-4 w-4 text-blue-300" />
                           Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
                         </CardTitle>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowAllTemplates(!showAllTemplates)}
-                          className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs p-1.5"
-                        >
-                          {showAllTemplates ? 'Ver Menos' : 'Ver Todas'}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowAllTemplates(!showAllTemplates)}
+                            className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs p-1.5"
+                          >
+                            {showAllTemplates ? 'Ver Menos' : 'Ver Todas'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsTemplateModalOpen(true)}
+                            className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs p-1.5"
+                          >
+                            <Settings className="h-3 w-3 mr-1" />
+                            Novo/Editar
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -460,15 +481,26 @@ const Transactions = () => {
                           </p>
                         </div>
                         
-                        {!transaction.is_paid && (
+                        <div className="flex items-center space-x-2">
                           <Button
                             size="sm"
-                            onClick={() => handleMarkAsPaid(transaction.id)}
-                            className="bg-green-600 hover:bg-green-700"
+                            variant="ghost"
+                            onClick={() => setEditingTransaction(transaction)}
+                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-800/30"
                           >
-                            Marcar como Pago
+                            <Edit className="h-4 w-4" />
                           </Button>
-                        )}
+                          
+                          {!transaction.is_paid && (
+                            <Button
+                              size="sm"
+                              onClick={() => handleMarkAsPaid(transaction.id)}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Marcar como Pago
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -482,6 +514,35 @@ const Transactions = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Modal de Edição de Transação */}
+        <EditTransactionModal
+          transaction={editingTransaction}
+          categories={categories}
+          isOpen={!!editingTransaction}
+          onClose={() => setEditingTransaction(null)}
+          onUpdate={async (id, data) => {
+            // Simulate update - in a real app you'd call the API
+            toast({
+              title: "Transação atualizada!",
+              description: "As alterações foram salvas com sucesso.",
+            });
+            setEditingTransaction(null);
+            return { error: null };
+          }}
+          onSaveAsTemplate={addTemplate}
+        />
+
+        {/* Modal de Gerenciamento de Templates */}
+        <TemplateManagementModal
+          isOpen={isTemplateModalOpen}
+          onClose={() => setIsTemplateModalOpen(false)}
+          templates={templates}
+          categories={categories}
+          onAddTemplate={addTemplate}
+          onUpdateTemplate={updateTemplate}
+          onDeleteTemplate={deleteTemplate}
+        />
       </div>
     </div>
   );

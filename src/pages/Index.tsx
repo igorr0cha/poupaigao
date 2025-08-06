@@ -154,10 +154,7 @@ const Index = () => {
           </Card>
 
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
-            <CardHeader>
-              <CardTitle className="text-white">Despesas por Categoria</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <ExpenseChart data={expensesByCategory} />
             </CardContent>
           </Card>

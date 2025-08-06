@@ -273,7 +273,7 @@ const SimplifiedTransactions = () => {
                               ×
                             </Button>
                           </div>
-                        ))}5
+                        ))}
                       </div>
                     )}
                   </CardContent>
