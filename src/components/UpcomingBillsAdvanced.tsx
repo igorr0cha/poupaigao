@@ -4,13 +4,16 @@ import { useFinancialData } from '@/hooks/useFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertTriangle, CheckCircle, Calendar } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Calendar, Edit2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import EditTransactionModal from '@/components/EditTransactionModal';
+import { supabase } from '@/integrations/supabase/client';
 
 const UpcomingBillsAdvanced = () => {
-  const { transactions, categories, markTransactionAsPaid, loading } = useFinancialData();
+  const { transactions, categories, markTransactionAsPaid, loading, refetch } = useFinancialData();
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [paying, setPaying] = useState(false);
+  const [editTransaction, setEditTransaction] = useState<any>(null);
 
   // Get unpaid expenses for current month
   const currentMonth = new Date().getMonth() + 1;
@@ -46,6 +49,32 @@ const UpcomingBillsAdvanced = () => {
       });
     } finally {
       setPaying(false);
+    }
+  };
+
+  const handleUpdateTransaction = async (id: string, data: any) => {
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .update(data)
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      await refetch();
+      toast({
+        title: "Despesa atualizada!",
+        description: "A despesa foi atualizada com sucesso.",
+      });
+      
+      return { error: null };
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao atualizar despesa.",
+        variant: "destructive",
+      });
+      return { error };
     }
   };
 
@@ -115,6 +144,14 @@ const UpcomingBillsAdvanced = () => {
                     <h4 className="font-semibold text-white text-lg">
                       {getCategoryName(expense.category_id)}
                     </h4>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditTransaction(expense)}
+                      className="h-6 w-6 p-0 hover:bg-gray-700/50 ml-2"
+                    >
+                      <Edit2 className="h-3 w-3 text-gray-400 hover:text-white" />
+                    </Button>
                   </div>
                   <p className="text-gray-300 font-medium text-base mb-1">{expense.description}</p>
                   <div className="flex items-center space-x-4 text-sm text-gray-400">
@@ -177,6 +214,16 @@ const UpcomingBillsAdvanced = () => {
               </div>
             ))}
           </div>
+        )}
+        
+        {editTransaction && (
+          <EditTransactionModal
+            transaction={editTransaction}
+            categories={categories}
+            isOpen={true}
+            onClose={() => setEditTransaction(null)}
+            onUpdate={handleUpdateTransaction}
+          />
         )}
       </CardContent>
     </Card>

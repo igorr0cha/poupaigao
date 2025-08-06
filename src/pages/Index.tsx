@@ -9,6 +9,7 @@ import { ExpenseChart } from '@/components/ExpenseChart';
 import UpcomingBillsAdvanced from '@/components/UpcomingBillsAdvanced';
 import QuickActionsAdvanced from '@/components/QuickActionsAdvanced';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
+import FinancialAnalytics from '@/components/FinancialAnalytics';
 
 const Index = () => {
   const { user } = useAuth();
@@ -142,8 +143,13 @@ const Index = () => {
           <QuickActionsAdvanced />
         </div>
 
+        {/* Gráficos Financeiros */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Gráficos Financeiros</h2>
+        </div>
+
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
             <CardHeader>
               <CardTitle className="text-white">Evolução Financeira</CardTitle>
@@ -159,6 +165,9 @@ const Index = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Analytics Section */}
+        <FinancialAnalytics />
       </div>
     </div>
   );
