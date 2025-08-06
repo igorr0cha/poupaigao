@@ -387,8 +387,8 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggle }) => {
               isMobile ? "mt-4 pt-4" : "mt-2 sm:mt-3 lg:mt-4 pt-2 sm:pt-3 lg:pt-4"
             )}>
               <div className="text-center">
-                <p className="text-xs text-slate-500">v2.0.0</p>
-                <p className="text-xs text-slate-600 mt-1">© 2024 PoupaIgão</p>
+                <p className="text-xs text-slate-500">v1.0.4</p>
+                <p className="text-xs text-slate-600 mt-1">© 2025 PoupaIgão</p>
               </div>
             </div>
           </div>
