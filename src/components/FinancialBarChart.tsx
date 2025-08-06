@@ -46,41 +46,54 @@ export const FinancialBarChart = ({ data }: FinancialBarChartProps) => {
   };
 
   return (
-    <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-          <XAxis 
-            dataKey="month" 
-            stroke="#9CA3AF"
-            fontSize={12}
-          />
-          <YAxis 
-            stroke="#9CA3AF"
-            fontSize={12}
-            tickFormatter={(value) => `R$ ${value.toLocaleString('pt-BR')}`}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            wrapperStyle={{ color: '#ffffff' }}
-            iconType="rect"
-          />
-          <Bar 
-            dataKey="income" 
-            name="Receitas"
-            fill="#10B981"
-            radius={[4, 4, 0, 0]}
-            opacity={0.8}
-          />
-          <Bar 
-            dataKey="expenses" 
-            name="Despesas"
-            fill="#EF4444"
-            radius={[4, 4, 0, 0]}
-            opacity={0.8}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+
+    
+
+      <div className='relative'>
+        <br />
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-white mb-2 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            Receitas x Despesas anuais
+          </h3>
+          <div className="h-px bg-gradient-to-r from-green-500/30 to-blue-500/30"></div>
+        </div>
+
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis
+                dataKey="month"
+                stroke="#9CA3AF"
+                fontSize={12}
+              />
+              <YAxis
+                stroke="#9CA3AF"
+                fontSize={12}
+                tickFormatter={(value) => `R$ ${value.toLocaleString('pt-BR')}`}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                wrapperStyle={{ color: '#ffffff' }}
+                iconType="rect"
+              />
+              <Bar
+                dataKey="income"
+                name="Receitas"
+                fill="#10B981"
+                radius={[4, 4, 0, 0]}
+                opacity={0.8}
+              />
+              <Bar
+                dataKey="expenses"
+                name="Despesas"
+                fill="#EF4444"
+                radius={[4, 4, 0, 0]}
+                opacity={0.8}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
   );
 };
