@@ -248,17 +248,6 @@ const EditTransactionModal = ({
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Checkbox
-                    id="is-recurring"
-                    checked={formData.is_recurring}
-                    onCheckedChange={(checked) => setFormData({...formData, is_recurring: !!checked})}
-                    className="border-green-400 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                  />
-                  <Label htmlFor="is-recurring" className="text-green-300">
-                    Despesa Recorrente
-                  </Label>
-                </div>
 
                 {formData.is_recurring && (
                   <div>

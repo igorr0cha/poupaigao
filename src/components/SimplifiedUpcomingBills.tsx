@@ -3,8 +3,12 @@ import React, { useState } from 'react';
 import { useSimplifiedFinancialData } from '@/hooks/useSimplifiedFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, Edit2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+
+import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import EditTransactionModal from '@/components/EditTransactionModal';
 
 interface SimplifiedUpcomingBillsProps {
   onUpdate: () => void;
@@ -13,6 +17,20 @@ interface SimplifiedUpcomingBillsProps {
 const SimplifiedUpcomingBills = ({ onUpdate }: SimplifiedUpcomingBillsProps) => {
   const { transactions, markTransactionAsPaid } = useSimplifiedFinancialData();
   const [payingTransaction, setPayingTransaction] = useState<string | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<any>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from('expense_categories').select('*');
+      if (error) {
+        console.error("Erro ao buscar categorias: ", error);
+      } else {
+        setCategories(data);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const getDaysUntilDue = (dueDate: string) => {
     const today = new Date();
@@ -84,6 +102,30 @@ const SimplifiedUpcomingBills = ({ onUpdate }: SimplifiedUpcomingBillsProps) => 
     }
   };
 
+  const handleUpdateTransaction = async (id: string, data: any) => {
+    const { error } = await supabase
+      .from('transactions')
+      .update(data)
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao atualizar despesa.",
+        variant: "destructive",
+      });
+      return { error };
+    }
+    
+    toast({
+      title: "Despesa atualizada!",
+      description: "A despesa foi atualizada com sucesso.",
+    });
+
+    onUpdate(); // Chama a função para recarregar os dados
+    return { error: null };
+  };
+
   return (
     <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
       <CardHeader>
@@ -144,7 +186,21 @@ const SimplifiedUpcomingBills = ({ onUpdate }: SimplifiedUpcomingBillsProps) => 
                     </p>
                   )}
                 </div>
-                {/* O botão de pagar continua igual */}
+
+                 {/* Botão de editar despesa */} 
+                 <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setEditingTransaction({
+                    ...expense,
+                    amount: expense.amount.toString()
+                  })}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>   
+                
+                {/* Botão de pagar */}
                 <Button
                   size="sm"
                   onClick={() => handleMarkAsPaid(expense.id)}
@@ -168,6 +224,17 @@ const SimplifiedUpcomingBills = ({ onUpdate }: SimplifiedUpcomingBillsProps) => 
               <p className="text-sm text-gray-500 mt-1">Todas as contas estão em dia!</p>
             </div>
           )}
+
+          {editingTransaction && (
+            <EditTransactionModal
+              transaction={editingTransaction}
+              categories={categories}
+              isOpen={true}
+              onClose={() => setEditingTransaction(null)}
+              onUpdate={handleUpdateTransaction}
+            />
+          )}
+
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -144,6 +143,9 @@ const UpcomingBillsAdvanced = () => {
                     <h4 className="font-semibold text-white text-lg">
                       {getCategoryName(expense.category_id)}
                     </h4>
+                  </div>
+                  <div className="flex items-center">
+                    <p className="text-gray-300 font-medium text-base mb-1">{expense.description}</p>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -153,7 +155,6 @@ const UpcomingBillsAdvanced = () => {
                       <Edit2 className="h-3 w-3 text-gray-400 hover:text-white" />
                     </Button>
                   </div>
-                  <p className="text-gray-300 font-medium text-base mb-1">{expense.description}</p>
                   <div className="flex items-center space-x-4 text-sm text-gray-400">
                     <span className="font-semibold text-orange-400">
                       R$ {Number(expense.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
