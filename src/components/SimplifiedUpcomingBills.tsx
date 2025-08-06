@@ -8,7 +8,11 @@ import { toast } from '@/components/ui/use-toast';
 
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import EditTransactionModal from '@/components/EditTransactionModal';
+
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface SimplifiedUpcomingBillsProps {
   onUpdate: () => void;
@@ -226,13 +230,66 @@ const SimplifiedUpcomingBills = ({ onUpdate }: SimplifiedUpcomingBillsProps) => 
           )}
 
           {editingTransaction && (
-            <EditTransactionModal
-              transaction={editingTransaction}
-              categories={categories}
-              isOpen={true}
-              onClose={() => setEditingTransaction(null)}
-              onUpdate={handleUpdateTransaction}
-            />
+            <Dialog open={!!editingTransaction} onOpenChange={() => setEditingTransaction(null)}>
+              <DialogContent className="bg-gray-900 border-gray-700">
+                  <DialogHeader>
+                      <DialogTitle className="text-white">Editar Despesa</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                      <div>
+                          <Label htmlFor="edit-description" className="text-gray-300">Descrição</Label>
+                          <Input
+                              id="edit-description"
+                              value={editingTransaction.description}
+                              onChange={(e) => setEditingTransaction({ ...editingTransaction, description: e.target.value })}
+                              className="bg-gray-800 border-gray-700 text-white"
+                          />
+                      </div>
+                      <div>
+                          <Label htmlFor="edit-amount" className="text-gray-300">Valor</Label>
+                          <Input
+                              id="edit-amount"
+                              type="number"
+                              step="0.01"
+                              value={editingTransaction.amount}
+                              onChange={(e) => setEditingTransaction({ ...editingTransaction, amount: e.target.value })}
+                              className="bg-gray-800 border-gray-700 text-white"
+                          />
+                      </div>
+                      <div>
+                          <Label htmlFor="edit-category" className="text-gray-300">Categoria</Label>
+                          <Select
+                              value={editingTransaction.category_id || ''}
+                              onValueChange={(value) => setEditingTransaction({ ...editingTransaction, category_id: value })}
+                          >
+                              <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                                  <SelectValue placeholder="Selecione uma categoria" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-gray-800 border-gray-700">
+                                  {categories.map((category) => (
+                                      <SelectItem key={category.id} value={category.id} className="text-white">
+                                          {category.name}
+                                      </SelectItem>
+                                  ))}
+                              </SelectContent>
+                          </Select>
+                      </div>
+                      <Button
+                          onClick={() => {
+                              handleUpdateTransaction(editingTransaction.id, {
+                                  description: editingTransaction.description,
+                                  amount: parseFloat(editingTransaction.amount),
+                                  category_id: editingTransaction.category_id,
+                              });
+                              setEditingTransaction(null);
+                          }}
+                          className="w-full bg-green-600 hover:bg-green-700"
+                      >
+                          Salvar Alterações
+                      </Button>
+                  </div>
+              </DialogContent>
+          </Dialog>
           )}
 
         </div>

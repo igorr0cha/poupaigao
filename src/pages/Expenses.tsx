@@ -12,6 +12,8 @@ import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
+import EditTransactionModal from '@/components/EditTransactionModal';
+
 const Expenses = () => {
   const { user } = useAuth();
   const { categories, transactions, loading, refetch, updateTransaction, deleteTransaction } = useSimplifiedFinancialData();
@@ -557,61 +559,21 @@ const Expenses = () => {
 
         {/* Dialog para editar despesa */}
         {editingTransaction && (
-          <Dialog open={!!editingTransaction} onOpenChange={() => setEditingTransaction(null)}>
-            <DialogContent className="bg-gray-900 border-gray-700">
-              <DialogHeader>
-                <DialogTitle className="text-white">Editar Despesa</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="edit-description" className="text-gray-300">Descrição</Label>
-                  <Input
-                    id="edit-description"
-                    value={editingTransaction.description}
-                    onChange={(e) => setEditingTransaction({...editingTransaction, description: e.target.value})}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-amount" className="text-gray-300">Valor</Label>
-                  <Input
-                    id="edit-amount"
-                    type="number"
-                    step="0.01"
-                    value={editingTransaction.amount}
-                    onChange={(e) => setEditingTransaction({...editingTransaction, amount: e.target.value})}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-category" className="text-gray-300">Categoria</Label>
-                  <Select
-                    value={editingTransaction.category_id || ''}
-                    onValueChange={(value) => setEditingTransaction({...editingTransaction, category_id: value})}
-                  >
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id} className="text-white">
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button 
-                  onClick={handleEditTransaction}
-                  disabled={saving}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                >
-                  {saving ? 'Salvando...' : 'Salvar Alterações'}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
+        <EditTransactionModal
+          transaction={editingTransaction}
+          categories={categories}
+          isOpen={!!editingTransaction}
+          onClose={() => setEditingTransaction(null)}
+          onUpdate={async (id, data) => {
+            const { error } = await updateTransaction(id, data);
+            if (!error) {
+              setEditingTransaction(null);
+            }
+            return { error };
+          }}
+        />
+      )}
+
       </div>
     </div>
   );
