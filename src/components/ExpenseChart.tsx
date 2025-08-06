@@ -106,10 +106,10 @@ export const ExpenseChart = ({ data }: ExpenseChartProps) => {
                 cy="45%"
                 innerRadius={45}
                 outerRadius={90}
-                paddingAngle={0.5}
+                paddingAngle={1}
                 dataKey="value"
                 stroke="rgba(255,255,255,0.1)"
-                strokeWidth={1}
+                strokeWidth={4}
                 filter="url(#shadow)"
               >
                 {chartData.map((entry, index) => (

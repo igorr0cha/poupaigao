@@ -396,10 +396,10 @@ const Investments = () => {
                         cy="40%"
                         innerRadius={60}
                         outerRadius={120}
-                        paddingAngle={4}
+                        paddingAngle={1}
                         dataKey="value"
                         stroke="#374151"
-                        strokeWidth={2}
+                        strokeWidth={3}
                       >
                         {investmentByType.map((entry, index) => (
                           <Cell 
