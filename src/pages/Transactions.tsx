@@ -199,38 +199,38 @@ const Transactions = () => {
               </DialogHeader>
               <div className="space-y-4">
                 {/* Seção de Predefinições Rápidas */}
-                {filteredTemplates.length > 0 && (
-                  <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/60 to-indigo-900/60 border-blue-600/60 shadow-xl">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-white flex items-center text-sm font-semibold">
-                          <Zap className="mr-2 h-4 w-4 text-blue-300" />
-                          Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
-                        </CardTitle>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowAllTemplates(!showAllTemplates)}
-                            className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs p-1.5"
-                          >
-                            {showAllTemplates ? 'Ver Menos' : 'Ver Todas'}
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setIsTemplateModalOpen(true)}
-                            className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs p-1.5"
-                          >
-                            <Settings className="h-3 w-3 mr-1" />
-                            Novo/Editar
-                          </Button>
-                        </div>
+                <Card className="backdrop-blur-sm bg-gradient-to-br from-blue-900/60 to-indigo-900/60 border-blue-600/60 shadow-xl">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-white flex items-center text-sm font-semibold">
+                        <Zap className="mr-2 h-4 w-4 text-blue-300" />
+                        Predefinições {newTransaction.type === 'income' ? 'de Receitas' : 'de Despesas'}
+                      </CardTitle>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowAllTemplates(!showAllTemplates)}
+                          className="text-blue-300 hover:text-blue-100 hover:bg-blue-800/30 text-xs p-1.5"
+                        >
+                          {showAllTemplates ? 'Ver Menos' : 'Ver Todas'}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsTemplateModalOpen(true)}
+                          className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs p-1.5"
+                        >
+                          <Settings className="h-3 w-3 mr-1" />
+                          Criar
+                        </Button>
                       </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    {filteredTemplates.length > 0 ? (
                       <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto">
                         {(showAllTemplates ? filteredTemplates : filteredTemplates.slice(0, 3)).map((template: any) => (
                           <Button
@@ -256,9 +256,14 @@ const Transactions = () => {
                           </Button>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
+                    ) : (
+                      <div className="text-center py-4">
+                        <p className="text-blue-200 text-sm">Nenhuma predefinição encontrada</p>
+                        <p className="text-blue-300 text-xs mt-1">Clique em "Criar" para adicionar uma</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="type" className="text-gray-300">Tipo</Label>

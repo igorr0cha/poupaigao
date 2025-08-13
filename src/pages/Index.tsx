@@ -166,6 +166,11 @@ const Index = () => {
           </Card>
         </div>
 
+        {/* Seção de Análises */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Análises Financeiras</h2>
+        </div>
+        
         {/* Analytics Section */}
         <FinancialAnalytics />
       </div>
