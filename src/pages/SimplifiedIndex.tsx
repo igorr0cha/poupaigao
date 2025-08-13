@@ -13,6 +13,8 @@ import { FinancialBarChart } from '@/components/FinancialBarChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
 import AnimatedCounter from '@/components/AnimatedCounter';
 
+import FinancialAnalytics from '@/components/FinancialAnalytics';
+
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -232,13 +234,9 @@ const SimplifiedIndex = () => {
               </div>
             </TabsContent>
             <TabsContent value="analytics" className="space-y-4 p-6">
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2">Análises Avançadas</h3>
-                <p className="text-gray-400 text-sm">Insights detalhados sobre suas finanças</p>
-                <div className="mt-4 p-4 bg-gray-800/30 rounded-lg">
-                  <p className="text-sm text-gray-400">Em desenvolvimento</p>
-                  <p className="text-xs text-gray-500 mt-1">Funcionalidades avançadas em breve</p>
-                </div>
+              {/* ADICIONE A NOVA SEÇÃO DE ANÁLISES AQUI */}
+              <div className="mt-4 sm:mt-6 lg:mt-8">
+                <FinancialAnalytics />
               </div>
             </TabsContent>
           </Tabs>
