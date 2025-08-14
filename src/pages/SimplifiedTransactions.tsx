@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useSimplifiedFinancialData } from '@/hooks/useSimplifiedFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,13 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap } from 'lucide-react';
+import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap, Settings, X } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
-import { /*...,*/ X } from 'lucide-react';
+import TemplateManagementModal from '@/components/TemplateManagementModal';
 
 const SimplifiedTransactions = () => {
-  const { categories, addTransaction, loading, templates, addTemplate, deleteTemplate } = useSimplifiedFinancialData();
+  const { categories, addTransaction, loading, templates, addTemplate, deleteTemplate, updateTemplate } = useSimplifiedFinancialData();
 
+  // Todos os hooks devem ser declarados no topo do componente.
   const [formData, setFormData] = useState({
     type: 'expense' as 'income' | 'expense',
     amount: '',
@@ -28,6 +28,17 @@ const SimplifiedTransactions = () => {
   const [saving, setSaving] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+  // ✅ CORREÇÃO: Movi o estado do modal para o topo, junto com os outros hooks.
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+
+  // O 'return' condicional deve vir DEPOIS de todos os hooks.
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400"></div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +57,6 @@ const SimplifiedTransactions = () => {
 
       if (formData.type === 'expense') {
         transactionData.category_id = formData.category_id;
-        
         if (formData.due_date) {
           transactionData.due_date = formData.due_date;
         }
@@ -56,7 +66,6 @@ const SimplifiedTransactions = () => {
 
       if (error) throw error;
 
-      // Salvar como template se solicitado
       if (saveAsTemplate) {
         const templateData = {
           type: formData.type,
@@ -64,7 +73,6 @@ const SimplifiedTransactions = () => {
           amount: parseFloat(formData.amount),
           category_id: formData.category_id || null
         };
-        
         await addTemplate(templateData);
       }
 
@@ -73,7 +81,6 @@ const SimplifiedTransactions = () => {
         description: `${formData.type === 'income' ? 'Receita' : 'Despesa'} registrada com sucesso.`,
       });
 
-      // Reset form but keep some values
       setFormData({
         type: formData.type,
         amount: '',
@@ -134,14 +141,6 @@ const SimplifiedTransactions = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400"></div>
-      </div>
-    );
-  }
-
   const backgroundSvg = `data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E`;
 
   const months = [
@@ -150,7 +149,7 @@ const SimplifiedTransactions = () => {
   ];
 
   const filteredTemplates = templates.filter(template => template.type === formData.type);
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-900">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("${backgroundSvg}")` }}></div>
@@ -166,15 +165,12 @@ const SimplifiedTransactions = () => {
           </div>
 
           <Card className="backdrop-blur-sm bg-black/40 border-green-800/30">
-          
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-white text-lg sm:text-xl">Detalhes da Transação</CardTitle>
             </CardHeader>
 
             <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
-              {/* Seção de Predefinições Rápidas */}
               {filteredTemplates.length > 0 && (
-
                 <Card className="bg-gradient-to-br from-green-900/80 to-emerald-900/80 border-green-800/30 shadow-xl mb-4 sm:mb-6">
                   <CardHeader className="pb-3 p-3 sm:p-4">
                     <div className="flex items-center justify-between">
@@ -182,24 +178,35 @@ const SimplifiedTransactions = () => {
                         <Zap className="mr-2 h-4 w-4 text-green-400" />
                         Predefinições Rápidas
                       </CardTitle>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowTemplates(!showTemplates)}
-                        className="text-green-300 hover:text-green-100 hover:bg-green-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
-                      >
-                        {showTemplates ? 'Ocultar' : 'Ver Todas'}
-                        <BookOpen className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsTemplateModalOpen(true)}
+                          className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                        >
+                          Criar/Editar
+                          <Settings className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowTemplates(!showTemplates)}
+                          className="text-green-300 hover:text-green-100 hover:bg-green-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                        >
+                          {showTemplates ? 'Ocultar' : 'Ver Todas'}
+                          <BookOpen className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-3 sm:p-4 pt-0">
                     {!showTemplates ? (
-                      // Exibir apenas os primeiros 3 templates como botões rápidos
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                         {filteredTemplates.slice(0, 3).map((template: any) => (
-                          <div key={template.id} className="relative">
+                          <div key={template.id} className="relative group">
                             <Button
                               type="button"
                               variant="ghost"
@@ -220,26 +227,26 @@ const SimplifiedTransactions = () => {
                                 </div>
                               </div>
                             </Button>
+                            {/* ✅ CORREÇÃO: Botão de exclusão com melhor visibilidade e posicionamento */}
                             <Button
                               type="button"
-                              variant="ghost"
+                              variant="destructive"
                               size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template.id);
                               }}
-                              className="absolute -top-1.5 -right-1.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-600 hover:bg-red-700 text-white"
+                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                             >
-                              <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                              <X className="h-3 w-3" />
                             </Button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      // Exibir todos os templates em formato de lista
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-h-48 overflow-y-auto pr-2">
                         {filteredTemplates.map((template: any) => (
-                          <div key={template.id} className="relative">
+                           <div key={template.id} className="relative group">
                             <Button
                               type="button"
                               variant="ghost"
@@ -260,17 +267,17 @@ const SimplifiedTransactions = () => {
                                 </div>
                               </div>
                             </Button>
-                            <Button
+                             <Button
                               type="button"
-                              variant="ghost"
-                              size="sm"
+                              variant="destructive"
+                              size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template.id);
                               }}
-                              className="absolute -top-1 -right-1 h-6 w-6 p-0 bg-red-500/80 hover:bg-red-600 text-white rounded-full"
+                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                             >
-                              ×
+                              <X className="h-3 w-3" />
                             </Button>
                           </div>
                         ))}
@@ -279,8 +286,9 @@ const SimplifiedTransactions = () => {
                   </CardContent>
                 </Card>
               )}
-
+              
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                {/* O restante do seu formulário permanece o mesmo... */}
                 <div className="flex gap-2 sm:gap-4">
                   <Button
                     type="button"
@@ -429,7 +437,6 @@ const SimplifiedTransactions = () => {
                   </>
                 )}
 
-                {/* Opção para salvar como template (para todas as transações) */}
                 <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border-2 border-purple-500/30 shadow-lg">
                   <Checkbox
                     id="save_template"
@@ -454,6 +461,17 @@ const SimplifiedTransactions = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* O modal de gerenciamento de templates */}
+        <TemplateManagementModal
+          isOpen={isTemplateModalOpen}
+          onClose={() => setIsTemplateModalOpen(false)}
+          templates={templates}
+          categories={categories}
+          onAddTemplate={addTemplate}
+          onUpdateTemplate={updateTemplate}
+          onDeleteTemplate={deleteTemplate}
+        />
       </div>
     </div>
   );

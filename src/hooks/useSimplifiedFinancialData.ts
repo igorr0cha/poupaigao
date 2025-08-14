@@ -484,8 +484,22 @@ export const useSimplifiedFinancialData = () => {
   };
 
   const updateTemplate = async (id: string, updates: any) => {
-    // Template functionality will be implemented when database table is ready
-    return { error: null };
+    if (!user) return { error: new Error('User not authenticated') };
+
+    try {
+      const { error } = await (supabase as any)
+        .from('transaction_templates')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) return { error };
+      
+      await fetchData();
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   };
 
   const deleteTemplate = async (id: string) => {
