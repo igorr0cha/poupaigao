@@ -183,10 +183,10 @@ const SimplifiedTransactions = () => {
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => setIsTemplateModalOpen(true)}
+                          onClick={() => window.location.href = '/template/new'}
                           className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
                         >
-                          Criar/Editar
+                          Criar
                           <Settings className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                         <Button
@@ -228,17 +228,17 @@ const SimplifiedTransactions = () => {
                               </div>
                             </Button>
                             {/* ✅ CORREÇÃO: Botão de exclusão com melhor visibilidade e posicionamento */}
-                            <Button
+                             <Button
                               type="button"
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDeleteTemplate(template.id);
+                                window.location.href = `/template/${template.id}/edit`;
                               }}
-                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                              <X className="h-3 w-3" />
+                              <Settings className="h-3 w-3" />
                             </Button>
                           </div>
                         ))}
@@ -269,15 +269,15 @@ const SimplifiedTransactions = () => {
                             </Button>
                              <Button
                               type="button"
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDeleteTemplate(template.id);
+                                window.location.href = `/template/${template.id}/edit`;
                               }}
-                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                              <X className="h-3 w-3" />
+                              <Settings className="h-3 w-3" />
                             </Button>
                           </div>
                         ))}

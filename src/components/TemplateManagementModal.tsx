@@ -276,12 +276,12 @@ const TemplateManagementModal = ({
                 {formData.type === 'expense' && (
                   <div>
                     <Label htmlFor="category" className="text-gray-300">Categoria</Label>
-                    <Select value={formData.category_id} onValueChange={(value) => setFormData({...formData, category_id: value})}>
+                    <Select value={formData.category_id || "none"} onValueChange={(value) => setFormData({...formData, category_id: value === "none" ? "" : value})}>
                       <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                         <SelectValue placeholder="Selecione uma categoria (opcional)" />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-700">
-                        <SelectItem value="" className="text-white">Sem categoria</SelectItem>
+                        <SelectItem value="none" className="text-white">Sem categoria</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category.id} value={category.id} className="text-white">
                             {category.name}

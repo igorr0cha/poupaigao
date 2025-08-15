@@ -9,6 +9,8 @@ import SimplifiedIndex from '@/pages/SimplifiedIndex';
 import Revenues from '@/pages/Revenues';
 import Expenses from '@/pages/Expenses';
 import SimplifiedTransactions from '@/pages/SimplifiedTransactions';
+import CreateTemplate from '@/pages/CreateTemplate';
+import EditTemplate from '@/pages/EditTemplate';
 import Investments from '@/pages/Investments';
 import Goals from '@/pages/Goals';
 import MonthlyHistory from '@/pages/MonthlyHistory';
@@ -65,6 +67,8 @@ function AppContent() {
                       <Route path="/revenues" element={<Revenues />} />
                       <Route path="/expenses" element={<Expenses />} />
                       <Route path="/transactions" element={<SimplifiedTransactions />} />
+                      <Route path="/template/new" element={<CreateTemplate />} />
+                      <Route path="/template/:id/edit" element={<EditTemplate />} />
                       <Route path="/investments" element={<Investments />} />
                       <Route path="/goals" element={<Goals />} />
                       <Route path="/monthly-history" element={<MonthlyHistory />} />
