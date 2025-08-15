@@ -7,12 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap, Settings, X } from 'lucide-react';
+import { Plus, ArrowUpRight, ArrowDownRight, Calendar, CheckCircle2, BookOpen, Save, Zap, Settings, X, Lightbulb } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import TemplateManagementModal from '@/components/TemplateManagementModal';
+import { useNavigate } from 'react-router-dom';
 
 const SimplifiedTransactions = () => {
   const { categories, addTransaction, loading, templates, addTemplate, deleteTemplate, updateTemplate } = useSimplifiedFinancialData();
+  const navigate = useNavigate();
 
   // Todos os hooks devem ser declarados no topo do componente.
   const [formData, setFormData] = useState({
@@ -183,11 +185,21 @@ const SimplifiedTransactions = () => {
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.location.href = '/template/new'}
-                          className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                          onClick={() => navigate('/template/new')}
+                          className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs sm:text-sm p-1.5 sm:p-2 flex items-center"
                         >
+                          <Lightbulb className="mr-1 h-4 w-4" />
                           Criar
-                          <Settings className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsTemplateModalOpen(true)}
+                            className="text-purple-300 hover:text-purple-100 hover:bg-purple-800/30 text-xs sm:text-sm p-1.5 sm:p-2"
+                        >
+                          <span className="ml-1">Editar</span>
+                          <Settings className="h-4 w-4" />
                         </Button>
                         <Button
                           type="button"
